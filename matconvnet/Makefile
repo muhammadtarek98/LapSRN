@@ -236,10 +236,10 @@ $(cpp_tgt): matlab/mex/.build/bits/impl/.stamp
 .PRECIOUS: matlab/mex/.build/%.o
 .PRECIOUS: %/.stamp
 
-matlab/mex/.build/bits/impl/imread.o : matlab/src/bits/impl/imread_helpers.hpp
-matlab/mex/.build/bits/impl/imread_quartz.o : matlab/src/bits/impl/imread_helpers.hpp
-matlab/mex/.build/bits/impl/imread_gdiplus.o : matlab/src/bits/impl/imread_helpers.hpp
-matlab/mex/.build/bits/impl/imread_libjpeg.o : matlab/src/bits/impl/imread_helpers.hpp
+matlab/mex/.build/bits/impl/imread.o : src
+matlab/mex/.build/bits/impl/imread_quartz.o : src
+matlab/mex/.build/bits/impl/imread_gdiplus.o : src
+matlab/mex/.build/bits/impl/imread_libjpeg.o : src
 
 # --------------------------------------------------------------------
 #                                                    Compilation rules
@@ -268,21 +268,21 @@ $(call nvcc-quote,-fPIC $(CXXFLAGS_PASS) $(CXXOPTIMFLAGS))
 
 ifneq ($(ENABLE_GPU),)
 ifeq ($(CUDAMETHOD),mex)
-matlab/mex/.build/%.o : matlab/src/%.cu matlab/mex/.build/.stamp
+matlab/mex/.build/%.o : src matlab/mex/.build/.stamp
 	MW_NVCC_PATH='$(NVCC)' \
 	$(MEX) -c $(MEXFLAGS_CC_GPU) "$(<)" $(nvcc_filter)
 	mv -f "$(notdir $(@))" "$(@)"
 else
-matlab/mex/.build/%.o : matlab/src/%.cu matlab/mex/.build/.stamp
+matlab/mex/.build/%.o : src matlab/mex/.build/.stamp
 	$(NVCC) $(NVCCFLAGS) "$(<)" -c -o "$(@)" $(nvcc_filter)
 endif
 endif
 
-matlab/mex/.build/%.o : matlab/src/%.cpp matlab/src/%.cu matlab/mex/.build/.stamp
+matlab/mex/.build/%.o : src src matlab/mex/.build/.stamp
 	$(MEX) -c $(MEXFLAGS_CC_CPU) "$(<)"
 	mv -f "$(notdir $(@))" "$(@)"
 
-matlab/mex/.build/%.o : matlab/src/%.cpp matlab/mex/.build/.stamp
+matlab/mex/.build/%.o : src matlab/mex/.build/.stamp
 	$(MEX) -c $(MEXFLAGS_CC_CPU) "$(<)"
 	mv -f "$(notdir $(@))" "$(@)"
 
